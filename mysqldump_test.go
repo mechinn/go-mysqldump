@@ -65,8 +65,8 @@ CREATE TABLE 'Test_Table' (
 	~NullFloat64~ DOUBLE,
 	~bool~ TINYINT(1) NOT NULL,
 	~NullBool~ TINYINT(1),
-	~time~ TIME NOT NULL,
-	~NullTime~ TIME,
+	~time~ DATETIME NOT NULL,
+	~NullTime~ DATETIME,
 	~varbinary~ VARBINARY,
 	~rawbytes~ BLOB,
 	PRIMARY KEY (~id~)
@@ -128,8 +128,8 @@ func mockColumnRows() *sqlmock.Rows {
 		AddRow("NullFloat64", "DOUBLE", "YES", "", nil, "").
 		AddRow("bool", "BOOL", "NO", "", nil, "").
 		AddRow("NullBool", "BOOL", "YES", "", nil, "").
-		AddRow("time", "TIME", "NO", "", nil, "").
-		AddRow("NullTime", "TIME", "YES", "", nil, "").
+		AddRow("time", "DATETIME", "NO", "", nil, "").
+		AddRow("NullTime", "DATETIME", "YES", "", nil, "").
 		AddRow("varbinary", "VARBINARY", "YES", "", nil, "").
 		AddRow("rawbytes", "BLOB", "YES", "", nil, "")
 }
@@ -185,10 +185,10 @@ func c(name string, v interface{}) *sqlmock.Column {
 		nullable = true
 		t = "BOOL"
 	case time.Time:
-		t = "TIME"
+		t = "DATETIME"
 	case sql.NullTime:
 		nullable = true
-		t = "TIME"
+		t = "DATETIME"
 	case []byte:
 		nullable = true
 		t = "VARBINARY"
@@ -243,8 +243,8 @@ func RunDump(t testing.TB, data *mysqldump.Data) {
 	~NullFloat64~ DOUBLE,
 	~bool~ TINYINT(1) NOT NULL,
 	~NullBool~ TINYINT(1),
-	~time~ TIME NOT NULL,
-	~NullTime~ TIME,
+	~time~ DATETIME NOT NULL,
+	~NullTime~ DATETIME,
 	~varbinary~ VARBINARY,
 	~rawbytes~ BLOB,
 	PRIMARY KEY (~id~)
@@ -421,8 +421,8 @@ func TestNoLockOk(t *testing.T) {
 	~NullFloat64~ DOUBLE,
 	~bool~ TINYINT(1) NOT NULL,
 	~NullBool~ TINYINT(1),
-	~time~ TIME NOT NULL,
-	~NullTime~ TIME,
+	~time~ DATETIME NOT NULL,
+	~NullTime~ DATETIME,
 	~varbinary~ VARBINARY,
 	~rawbytes~ BLOB,
 	PRIMARY KEY (~id~)

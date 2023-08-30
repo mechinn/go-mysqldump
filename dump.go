@@ -383,9 +383,26 @@ func (table *table) Init() error {
 
 	table.values = make([]interface{}, len(tt))
 	for i, tp := range tt {
-		table.values[i] = reflect.New(tp.ScanType()).Interface()
+		table.values[i] = reflect.New(reflectColumnType(tp)).Interface()
 	}
 	return nil
+}
+
+func reflectColumnType(tp *sql.ColumnType) reflect.Type {
+	// workaround https://github.com/go-sql-driver/mysql/pull/1424 till it's released
+	nullable, _ := tp.Nullable()
+	switch tp.DatabaseTypeName() {
+	case "TINYBLOB", "MEDIUMBLOB", "LONGBLOB", "BLOB",
+		"VARBINARY", "BINARY", "BIT", "GEOMETRY":
+		return reflect.TypeOf([]byte{})
+	case "TINYTEXT", "MEDIUMTEXT", "LONGTEXT", "TEXT",
+		"VARCHAR", "CHAR", "DECIMAL", "ENUM", "SET", "JSON", "TIME":
+		if nullable {
+			return reflect.TypeOf(sql.NullString{})
+		}
+		return reflect.TypeOf("")
+	}
+	return tp.ScanType()
 }
 
 func (table *table) Next() bool {
